@@ -1,52 +1,80 @@
-# Notes project
+# آزمایش ششم
 
-## Requirements
-- Python3
-- Postgres
+### [Repository link](https://github.com/thisismmf/az_narm_HW6)
 
-## How to run
+## اعضای گروه
 
-### Setup virtual environment
+محمدامین کرمی
+98105998
 
-#### Create venv
-```
-python -m venv ./venv
-```
+محمد مهدی فرهادی
+99105634
 
-#### Install requirements
-```
-python -m pip install -r requirements.txt
-```
+دانا افاضلی
+98105592
 
-#### Activate venv
-```
-source ./venv/bin/activate
-```
+## وظایف بخش‌های مختلف پروژه
+پروژه شامل دو app می‌باشد:
+- user: مدل‌ها، ویو‌ها و اطلاعات مربوط به user در این اپ قرار دارد.
+- note: مدل‌ها، ویو ها و وظایف مربوط به note ها در این اپ قرار دارد.
 
-### Setup database
-1. Create an instance of postgres database
-2. Make migrations
-    ```
-    python manage.py makemigrations
-    ```
-3. Migrate
-    ```
-    python manage.py migrate
-    ```
+برای اینکه پروژه بتواند به دیتابیس پستگره متصل شود نیاز است که در فایل settings.py تغییرات زیر را انجام دهیم:
+```python
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME':     os.environ.get('POSTGRES_DB',     'notes_db'),
+        'USER':     os.environ.get('POSTGRES_USER',   'notes_user'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'secretpassword'),
+        'HOST':     os.environ.get('POSTGRES_HOST',   'db'),
+        'PORT':     os.environ.get('POSTGRES_PORT',   '5432'),
+    }
+}
+```
+با این تغییر، فریمورک جنگو با استفاده از engine و اطلاعاتی که از enviroment variables می‌خواند، به دیتابیس متصل خواهد شد.
 
-### Create an admin
-```
-python manage.py createsuperuser
-```
+برای اینکه بتوانیم از پروژه یک image و در نهایت یک container بسازیم، نیاز به یک dockerfile داریم:
 
-## Important end-points
-```
-users/login/ --> login a user
-users/me/ --> get information of logged-in user
-users/create/ --> create a user
-users/<id>/delete/ --> delete a user
-notes/ --> list all notes of current user
-notes/<id>/ --> get details of a note
-notes/create/ --> create a note
-notes/<id>/delete/ --> delete a note
-```
+
+1. **image پایه**: از تصویر `python:3.9-slim` به عنوان پایه استفاده می‌شود که یک نسخه سبک از پایتون 3.9 است.
+
+2. **نصب وابستگی‌های سیستم**:
+   - `gcc`: کامپایلر C برای نصب برخی پکیج‌های پایتون
+   - `libpq-dev`: کتابخانه‌های مورد نیاز برای PostgreSQL
+   - `postgresql-client`: ابزارهای خط فرمان PostgreSQL
+
+3. **تنظیمات محیط کار**:
+   - دایرکتوری کاری به `/app` تغییر می‌کند
+   - فایل `requirements.txt` کپی شده و پکیج‌های پایتون نصب می‌شوند
+   - `psycopg2-binary` برای اتصال به PostgreSQL نصب می‌شود
+
+4. **کپی فایل‌های پروژه**:
+   - تمام فایل‌های پروژه به دایرکتوری `/app` کپی می‌شوند
+
+5. **تنظیمات محیطی**:
+   - متغیر محیطی `DJANGO_SETTINGS_MODULE` برای مشخص کردن فایل تنظیمات Django تنظیم می‌شود
+
+6. **دستور اجرا**:
+   - منتظر می‌ماند تا پایگاه داده PostgreSQL آماده شود
+   - migration‌های Django را اجرا می‌کند
+   - سرور Django را روی پورت 8000 اجرا می‌کند
+
+این Dockerfile به گونه‌ای طراحی شده که برنامه را به صورت خودکار و با اطمینان از آماده بودن تمام وابستگی‌ها اجرا می‌کند.
+
+در ادامه با استفاده از docker-compose.yml، یک دیتابیس پستگره با credentials مناسب میسازیم. همچنین پروژه را با استفاده از Dockerfile نوشته شده بالا می‌آوریم و به دیتابیس متصل می‌کنیم.
+
+
+1. **سرویس دیتابیس (db)**:
+   - از تصویر رسمی PostgreSQL استفاده می‌کند
+   - متغیرهای محیطی برای تنظیم نام دیتابیس، کاربر و رمز عبور تعریف شده‌اند
+   - پورت 5432 برای دسترسی به دیتابیس در دسترس قرار می‌گیرد
+   - داده‌های دیتابیس در یک volume به نام `postgres_data` ذخیره می‌شوند تا با حذف container از بین نروند
+
+2. **سرویس وب (web)**:
+   - از Dockerfile پروژه برای ساخت image استفاده می‌کند
+   - به سرویس دیتابیس وابسته است و منتظر آماده شدن آن می‌ماند
+   - متغیرهای محیطی برای اتصال به دیتابیس تنظیم شده‌اند
+   - پورت 8000 برای دسترسی به برنامه در دسترس قرار می‌گیرد
+   - فایل‌های پروژه در یک volume به نام `django_static` ذخیره می‌شوند
+
+این فایل به ما این امکان را می‌دهد با یک دستور ساده (`docker-compose up`) تمام سرویس‌های مورد نیاز را اجرا کنیم و با یک دستور دیگر (`docker-compose down`) آن‌ها را متوقف کنیم.
