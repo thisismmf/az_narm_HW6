@@ -78,3 +78,57 @@ DATABASES = {
    - فایل‌های پروژه در یک volume به نام `django_static` ذخیره می‌شوند
 
 این فایل به ما این امکان را می‌دهد با یک دستور ساده (`docker-compose up`) تمام سرویس‌های مورد نیاز را اجرا کنیم و با یک دستور دیگر (`docker-compose down`) آن‌ها را متوقف کنیم.
+
+
+## راه‌اندازی سرویس
+با استفاده از دستوری `docker-compose up -d` سرویس و دیتابیس را بالا می‌آوریم:
+
+<p align="center">
+  <img src="images/docker-compose-up.png" alt="docker-compose up">
+</p>
+
+
+حال پروژه آماده‌است و امکان ارسال درخواست برای آن وجود دارد
+
+## ارسال درخواست به وب‌سرور
+با استفاده از پست‌من و اطلاعات route هایی که در اختیار داریم، درخواست‌های زیر را انجام می‌دهیم:
+
+1. یک کاربر به نام user1 با رمز ۱۲۳۴ بسازید.
+
+<p align="center">
+  <img src="images/create-user.png" alt="Create user1">
+</p>
+
+---
+
+2. یادداشتی با تیتر title1 و بدنه body1 برای user1 بسازید.
+
+برای این‌کار نیاز است تا ابتدا با user1 لاگین کنیم:
+
+<p align="center">
+  <img src="images/login-user.png" alt="Login user1">
+</p>
+
+
+حال درخواست را ارسال می‌کنیم:
+
+<p align="center">
+  <img src="images/note1.png" alt="Create note1">
+</p>
+
+---
+
+3. یادداشتی با تیتر title2 و بدنه body2 برای user1 بسازید.
+
+<p align="center">
+  <img src="images/note2.png" alt="Create note2">
+</p>
+
+---
+
+
+4. همه یادداشت‌های user1 را دریافت کنید. (باید ۲ یادداشت بالا را به عنوان خروجی دریافت کنید)
+
+<p align="center">
+  <img src="images/get-list.png" alt="Get note list">
+</p>
