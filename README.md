@@ -132,3 +132,20 @@ DATABASES = {
 <p align="center">
   <img src="images/get-list.png" alt="Get note list">
 </p>
+
+---
+
+## تعامل با داکر
+
+با استفاده از دستور‌های زیر image ها و container های مربوط به پروژه را به دست می‌آوریم(کادر سبز رنگ image ها و container های مربوط به پروژه را نشان می‌دهند):
+
+<p align="center">
+  <img src="images/images-containers.png" alt="Get Images and Containers">
+</p>
+
+حال برای اینکه بتوانیم به کانتینر وب‌سرور متصل شویم نیاز است تا دستور exec را اجرا کنیم. برای مثال فرض می‌کنیم که میخواهیم super user ای بسازیم. پس خواهیم داشت:
+
+
+<p align="center">
+  <img src="images/create-superuser.png" alt="Create super user">
+</p>
